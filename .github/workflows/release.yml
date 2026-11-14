@@ -64,8 +64,6 @@ jobs:
             Built from ${{ github.sha }}.
 
             Drop `Origo-${{ steps.version.outputs.version }}.jar` into `plugins/` (Spigot, Paper, Folia, BungeeCord, Velocity) or `mods/` (Fabric, NeoForge).
-
-            Verify it with `sha256sum -c Origo-${{ steps.version.outputs.version }}.jar.sha256` or `gh attestation verify Origo-${{ steps.version.outputs.version }}.jar -R ${{ github.repository }}`.
           files: |
             ${{ steps.version.outputs.jar }}
             ${{ steps.version.outputs.jar }}.sha256
