@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "app.zeraph.origo.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "server": ["ServerConnectionListenerMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

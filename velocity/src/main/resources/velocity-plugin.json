@@ -1,0 +1,10 @@
+{
+  "id": "origo",
+  "name": "Origo",
+  "version": "${version}",
+  "description": "Restores real client IPs behind Zeraph edges.",
+  "url": "https://zeraph.app",
+  "authors": [],
+  "dependencies": [],
+  "main": "app.zeraph.origo.velocity.OrigoVelocity"
+}

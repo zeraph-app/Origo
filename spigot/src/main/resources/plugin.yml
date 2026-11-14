@@ -1,0 +1,7 @@
+name: Origo
+version: '${version}'
+main: app.zeraph.origo.spigot.OrigoSpigot
+api-version: '1.21'
+load: STARTUP
+description: Restores real client IPs behind Zeraph edges.
+website: https://zeraph.app

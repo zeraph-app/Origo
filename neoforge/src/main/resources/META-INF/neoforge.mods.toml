@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+
+[[mods]]
+modId = "origo"
+version = "${version}"
+displayName = "Origo"
+description = "Restores real client IPs behind Zeraph edges."
+displayURL = "https://zeraph.app"
+displayTest = "IGNORE_SERVER_VERSION"
+
+[[mixins]]
+config = "origo.neoforge.mixins.json"
+
+[[dependencies.origo]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.11,)"
+ordering = "NONE"
+side = "SERVER"
+
+[[dependencies.origo]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.11,)"
+ordering = "NONE"
+side = "SERVER"

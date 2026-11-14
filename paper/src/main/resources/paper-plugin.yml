@@ -1,0 +1,8 @@
+name: Origo
+version: '${version}'
+main: app.zeraph.origo.paper.OrigoPaper
+api-version: '1.21'
+load: STARTUP
+folia-supported: true
+description: Restores real client IPs behind Zeraph edges.
+website: https://zeraph.app

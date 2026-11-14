@@ -1,0 +1,2 @@
+# Refuse connections that don't come through a Zeraph edge.
+edge-only: false

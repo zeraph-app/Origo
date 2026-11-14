@@ -1,0 +1,31 @@
+[versions]
+kotlin = "2.4.21"
+shadow = "9.6.1"
+netty = "4.1.140.Final"
+snakeyaml = "2.7"
+slf4j = "2.0.17"
+spigot = "1.21.11-R0.2-SNAPSHOT"
+paper = "1.21.11-R0.1-SNAPSHOT"
+bungeecord = "1.21-R0.4"
+velocity = "3.4.0"
+fabric-loader = "0.17.3"
+fancymodloader = "10.0.36"
+mergetool = "2.0.7"
+mixin = "0.17.5+mixin.0.8.7"
+
+[libraries]
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+netty-codec = { module = "io.netty:netty-codec", version.ref = "netty" }
+snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyaml" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot" }
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
+bungeecord-api = { module = "net.md-5:bungeecord-api", version.ref = "bungeecord" }
+velocity-api = { module = "com.velocitypowered:velocity-api", version.ref = "velocity" }
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+fancymodloader = { module = "net.neoforged.fancymodloader:loader", version.ref = "fancymodloader" }
+mergetool = { module = "net.neoforged:mergetool", version.ref = "mergetool" }
+mixin = { module = "net.fabricmc:sponge-mixin", version.ref = "mixin" }
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

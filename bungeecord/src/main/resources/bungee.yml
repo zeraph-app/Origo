@@ -1,0 +1,4 @@
+name: Origo
+version: '${version}'
+main: app.zeraph.origo.bungeecord.OrigoBungee
+description: Restores real client IPs behind Zeraph edges.

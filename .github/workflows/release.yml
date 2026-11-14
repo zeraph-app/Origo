@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Java 21
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+
+      - name: Build and test
+        run: ./gradlew build --no-configuration-cache
+
+      - name: Read the version
+        id: version
+        run: |
+          version=$(grep '^version=' gradle.properties | cut -d= -f2)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version-build.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "jar=build/libs/Origo-$version.jar" >> "$GITHUB_OUTPUT"
+
+      - name: Checksum the jar
+        run: |
+          cd build/libs
+          sha256sum "Origo-${{ steps.version.outputs.version }}.jar" > "Origo-${{ steps.version.outputs.version }}.jar.sha256"
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: ${{ steps.version.outputs.jar }}
+
+      - name: Publish the release
+        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: Origo ${{ steps.version.outputs.version }} (build ${{ github.run_number }})
+          body: |
+            Built from ${{ github.sha }}.
+
+            Drop `Origo-${{ steps.version.outputs.version }}.jar` into `plugins/` (Spigot, Paper, Folia, BungeeCord, Velocity) or `mods/` (Fabric, NeoForge).
+
+            Verify it with `sha256sum -c Origo-${{ steps.version.outputs.version }}.jar.sha256` or `gh attestation verify Origo-${{ steps.version.outputs.version }}.jar -R ${{ github.repository }}`.
+          files: |
+            ${{ steps.version.outputs.jar }}
+            ${{ steps.version.outputs.jar }}.sha256
+          fail_on_unmatched_files: true
+          make_latest: true
