@@ -123,13 +123,30 @@ class OrigoDecoderTest {
 
     @Test
     fun `passes a handshake without a marker through byte for byte`() {
-        val (channel, connection) = connect()
+        val direct = InetSocketAddress("192.0.2.50", 1)
+        val (channel, connection) = connect(remote = direct)
         val original = handshake("play.example.com")
         val expected = bytes(original)
         channel.writeInbound(original)
 
-        assertEquals(EDGE, connection.address)
+        assertEquals(direct, connection.address)
         assertContentEquals(expected, connection.received.toByteArray())
+    }
+
+    @Test
+    fun `refuses an edge login that carries no player address`() {
+        val (unmarked, _) = connect()
+        unmarked.writeInbound(handshake("play.example.com"))
+        assertFalse(unmarked.isOpen)
+
+        val (garbled, _) = connect()
+        garbled.writeInbound(handshake("play.example.com${Handshake.MARKER}not-an-ip/1"))
+        assertFalse(garbled.isOpen)
+
+        val (ping, connection) = connect()
+        ping.writeInbound(handshake("play.example.com", nextState = 1))
+        assertTrue(ping.isOpen)
+        assertEquals(EDGE, connection.address)
     }
 
     @Test
@@ -173,7 +190,7 @@ class OrigoDecoderTest {
         assertFalse(stranger.isOpen)
 
         val (edge, connection) = connect(settings = settings(edgeOnly = true))
-        edge.writeInbound(handshake("play.example.com"))
+        edge.writeInbound(handshake("play.example.com${Handshake.MARKER}203.0.113.9/1"))
         assertTrue(edge.isOpen)
         assertEquals("play.example.com", receivedHandshake(connection).host)
     }

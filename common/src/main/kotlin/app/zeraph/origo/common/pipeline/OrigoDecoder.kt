@@ -64,10 +64,18 @@ class OrigoDecoder(
         val fromEdge = ctx.fromEdge()
         if (refuses(fromEdge)) return reject(ctx, input)
 
-        val forwarded = handshake.forwarded() ?: return complete(ctx, input)
+        val forwarded = handshake.forwarded()
+        val edgeLogin = fromEdge && handshake.nextState in LOGIN_STATES
+
+        // An edge login without a player address would show up as the edge's IP, so it is closed.
+        if (edgeLogin && forwarded?.address == null) {
+            warnOnce(lastUnmarkedWarning, "Refused a login from a Zeraph edge that carried no player address")
+            return reject(ctx, input)
+        }
+        if (forwarded == null) return complete(ctx, input)
 
         // Always strip the marker; trust it only on edge logins, the only handshakes edges mark.
-        if (fromEdge && handshake.nextState in LOGIN_STATES) {
+        if (edgeLogin) {
             forwarded.address?.let { AddressRewriter.rewrite(ctx.channel(), connectionHandler, it) }
         }
         input.skipBytes(handshake.frameLength)
@@ -118,6 +126,7 @@ class OrigoDecoder(
         private val WARN_EVERY_MS = TimeUnit.HOURS.toMillis(1)
         private val lastProxyWarning = AtomicLong(0)
         private val lastEmptyListWarning = AtomicLong(0)
+        private val lastUnmarkedWarning = AtomicLong(0)
 
         /** Logs at most once an hour per kind of warning. */
         private fun warnOnce(last: AtomicLong, message: String, now: Long = System.currentTimeMillis()) {
